@@ -17,6 +17,21 @@ public class VisitEntity {
 	@Column(nullable = false)
 	private LocalDateTime time;
 
+	// Relacja Many-to-One z DoctorEntity
+	@ManyToOne
+	@JoinColumn(name = "doctor_id", nullable = false) // Jednostronna relacja od strony dziecka
+	private DoctorEntity doctor;
+
+	// Relacja Many-to-One z PatientEntity
+	@ManyToOne
+	@JoinColumn(name = "patient_id", nullable = false) // Jednostronna relacja od strony dziecka
+	private PatientEntity patient;
+
+	// Relacja Many-to-One z MedicalTreatmentEntity
+	@ManyToOne
+	@JoinColumn(name = "medical_treatment_id", nullable = true) // Jednostronna relacja od strony dziecka
+	private MedicalTreatmentEntity medicalTreatment;
+
 	public Long getId() {
 		return id;
 	}
@@ -39,6 +54,30 @@ public class VisitEntity {
 
 	public void setTime(LocalDateTime time) {
 		this.time = time;
+	}
+
+	public DoctorEntity getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(DoctorEntity doctor) {
+		this.doctor = doctor;
+	}
+
+	public PatientEntity getPatient() {
+		return patient;
+	}
+
+	public void setPatient(PatientEntity patient) {
+		this.patient = patient;
+	}
+
+	public MedicalTreatmentEntity getMedicalTreatment() {
+		return medicalTreatment;
+	}
+
+	public void setMedicalTreatment(MedicalTreatmentEntity medicalTreatment) {
+		this.medicalTreatment = medicalTreatment;
 	}
 
 }
