@@ -29,6 +29,18 @@ public class PatientEntity {
 	@Column(nullable = false)
 	private LocalDate dateOfBirth;
 
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private boolean isInsured;
+
+	// Dodaj getter i setter:
+	public boolean isInsured() {
+		return isInsured;
+	}
+
+	public void setInsured(boolean insured) {
+		isInsured = insured;
+	}
+
 	// Relacja One-to-One z AddressEntity
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id", nullable = true) // Jednostronna relacja od strony rodzica
@@ -109,5 +121,7 @@ public class PatientEntity {
 	public void setVisits(List<VisitEntity> visits) {
 		this.visits = visits;
 	}
+
+
 
 }

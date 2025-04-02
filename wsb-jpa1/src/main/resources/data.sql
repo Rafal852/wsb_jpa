@@ -28,4 +28,13 @@ insert into visit (doctor_id, id, medical_treatment_id, patient_id, time, descri
 values
     (1, 1, 3, 1, '2025-03-20 10:00:00', 'Kontrola po operacji.'),
     (2, 2, 2, 1, '2025-03-21 14:00:00', 'Diagnostyka bólu głowy.'),
-    (3, 3, 1, 1, '2025-03-22 09:30:00', 'Badanie okresowe - morfologia.');
+    (3, 3, 1, 1, '2025-03-22 09:30:00', 'Badanie okresowe - morfologia.'),
+    (2, 4, 2, 2, '2025-03-22 09:30:00', 'Bóle głowy.'),
+    (1, 5, 1, 3, '2025-03-22 09:30:00', 'Złe wyniki.');
+
+
+--aktualizacja istniejących pacjentów z ustawieniem is_insured
+UPDATE Patient SET is_insured = true WHERE id = 1;
+UPDATE Patient SET is_insured = true WHERE id = 2;
+UPDATE Patient SET is_insured = false WHERE id = 3;
+UPDATE Patient SET is_insured = true WHERE id = 4;
