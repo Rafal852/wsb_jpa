@@ -23,7 +23,7 @@ public class DoctorEntity {
 
 	private String email;
 
-	@Column(nullable = false)
+	@Column(name = "doctor_number", nullable = false, unique = true)
 	private String doctorNumber;
 
 	@Column(nullable = false)

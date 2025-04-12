@@ -19,7 +19,7 @@ public class VisitEntity {
 
 	// Relacja Many-to-One z DoctorEntity
 	@ManyToOne
-	@JoinColumn(name = "doctor_id", nullable = false) // Jednostronna relacja od strony dziecka
+	@JoinColumn(name = "doctor_id", nullable = false) // Jednostronna relacja od strony dzieck
 	private DoctorEntity doctor;
 
 	// Relacja Many-to-One z PatientEntity
@@ -32,6 +32,7 @@ public class VisitEntity {
 	@JoinColumn(name = "medical_treatment_id", nullable = true) // Jednostronna relacja od strony dziecka
 	private MedicalTreatmentEntity medicalTreatment;
 
+	// Getters and setters
 	public Long getId() {
 		return id;
 	}
@@ -79,5 +80,4 @@ public class VisitEntity {
 	public void setMedicalTreatment(MedicalTreatmentEntity medicalTreatment) {
 		this.medicalTreatment = medicalTreatment;
 	}
-
 }
