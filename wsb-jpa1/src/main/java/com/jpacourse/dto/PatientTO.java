@@ -11,8 +11,9 @@ public class PatientTO {
     private String email;
     private String patientNumber;
     private LocalDate dateOfBirth;
-    private boolean isInsured; // nowe pole
+    private boolean isInsured; 
     private List<VisitTO> visits;
+    //nowe pole
 
     //gettery i settery
     public Long getId() { return id; }
