@@ -1,6 +1,5 @@
 package com.jpacourse.persistance.entity;
 
-
 import jakarta.persistence.*;
 
 @Entity

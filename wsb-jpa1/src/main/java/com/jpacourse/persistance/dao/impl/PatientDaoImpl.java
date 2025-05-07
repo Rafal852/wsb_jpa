@@ -12,47 +12,89 @@ import java.util.List;
 
 @Repository
 public class PatientDaoImpl extends AbstractDao<PatientEntity, Long> implements PatientDao {
+
     @Override
     @Transactional
     public void addVisitToPatient(Long patientId, Long doctorId, LocalDateTime visitTime, String description) {
 
         PatientEntity patient = entityManager.find(PatientEntity.class, patientId);
-        DoctorEntity doctor = entityManager.find(DoctorEntity.class, doctorId);
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient not found with ID: " + patientId);
+        }
 
-        if (patient == null || doctor == null) {
-            throw new IllegalArgumentException("Patient lub doctor nie istnieje");
+        DoctorEntity doctor = entityManager.find(DoctorEntity.class, doctorId);
+        if (doctor == null) {
+            throw new IllegalArgumentException("Doctor not found with ID: " + doctorId);
         }
 
         VisitEntity visit = new VisitEntity();
-        visit.setTime(visitTime);
-        visit.setDescription(description);
         visit.setPatient(patient);
         visit.setDoctor(doctor);
+        visit.setTime(visitTime);
+        visit.setDescription(description);
 
         patient.getVisits().add(visit);
+
+        entityManager.merge(patient);
     }
 
     @Override
     public List<PatientEntity> findByLastName(String lastName) {
-        return List.of();
+        String jpql = "SELECT p FROM PatientEntity p WHERE LOWER(p.lastName) = LOWER(:lastName)";
+        return entityManager.createQuery(jpql, PatientEntity.class)
+                .setParameter("lastName", lastName)
+                .getResultList();
     }
 
     @Override
     public List<PatientEntity> findPatientsWithMoreThanXVisits(Long visitCount) {
-        return List.of();
+        String jpql = "SELECT p FROM PatientEntity p WHERE SIZE(p.visits) > :visitCount";
+        return entityManager.createQuery(jpql, PatientEntity.class)
+                .setParameter("visitCount", visitCount.intValue())
+                .getResultList();
     }
 
     @Override
     public List<PatientEntity> findByInsured(boolean isInsured) {
-        return List.of();
+        String jpql = "SELECT p FROM PatientEntity p WHERE p.insured = :isInsured";
+        return entityManager.createQuery(jpql, PatientEntity.class)
+                .setParameter("isInsured", isInsured)
+                .getResultList();
     }
 
     @Override
     public void delete(Long id) {
-        PatientEntity entity = findOne(id);
-        if (entity != null) {
-            entityManager.remove(entity);
+        PatientEntity patient = entityManager.find(PatientEntity.class, id);
+        if (patient != null) {
+            entityManager.remove(patient);
         }
     }
+
+    @Override
+    @Transactional
+    public void addCascadeVisitToPatient(Long patientId, Long doctorId, LocalDateTime visitTime, String description) {
+
+        PatientEntity patient = entityManager.find(PatientEntity.class, patientId);
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient not found with ID: " + patientId);
+        }
+
+        DoctorEntity doctor = entityManager.find(DoctorEntity.class, doctorId);
+        if (doctor == null) {
+            throw new IllegalArgumentException("Doctor not found with ID: " + doctorId);
+        }
+
+        VisitEntity visit = new VisitEntity();
+        visit.setPatient(patient);
+        visit.setDoctor(doctor);
+        visit.setTime(visitTime);
+        visit.setDescription(description);
+
+        patient.getVisits().add(visit);
+
+        entityManager.merge(patient);
+    }
+
+
 
 }

@@ -13,7 +13,6 @@ public class PatientTO {
     private LocalDate dateOfBirth;
     private boolean isInsured; 
     private List<VisitTO> visits;
-    //nowe pole
 
     //gettery i settery
     public Long getId() { return id; }

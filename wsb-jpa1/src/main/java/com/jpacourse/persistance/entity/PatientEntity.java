@@ -33,7 +33,6 @@ public class PatientEntity {
 	@Column(nullable = false, columnDefinition = "boolean default false")
 	private boolean isInsured;
 
-	// Dodaj getter i setter:
 	public boolean isInsured() {
 		return isInsured;
 	}
