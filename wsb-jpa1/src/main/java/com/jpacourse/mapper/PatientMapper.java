@@ -24,7 +24,6 @@ public final class PatientMapper {
         patientTO.setPatientNumber(patientEntity.getPatientNumber());
         patientTO.setDateOfBirth(patientEntity.getDateOfBirth());
         patientTO.setInsured(patientEntity.isInsured());
-        //nowe pole
 
         if (patientEntity.getVisits() != null) {
             List<VisitTO> visitTOs = patientEntity.getVisits().stream()
@@ -68,7 +67,6 @@ public final class PatientMapper {
         patientEntity.setPatientNumber(patientTO.getPatientNumber());
         patientEntity.setDateOfBirth(patientTO.getDateOfBirth());
         patientEntity.setInsured(patientTO.isInsured());
-        //nowe pole
 
         return patientEntity;
     }

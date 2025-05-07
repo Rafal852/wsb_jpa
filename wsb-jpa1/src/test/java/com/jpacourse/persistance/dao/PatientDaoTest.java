@@ -13,11 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
+@Transactional
 public class PatientDaoTest {
 
     @Autowired
@@ -65,10 +70,10 @@ public class PatientDaoTest {
         LocalDateTime visitTime = LocalDateTime.now();
         String description = "Regular check-up";
 
-        // when
+        //when
         patientDao.addCascadeVisitToPatient(patient.getId(), doctor.getId(), visitTime, description);
 
-        // then
+        //then
         PatientEntity updatedPatient = patientDao.findOne(patient.getId());
         assertThat(updatedPatient).isNotNull();
         assertThat(updatedPatient.getVisits()).hasSize(1);
@@ -77,5 +82,92 @@ public class PatientDaoTest {
         assertThat(visitEntity.getDescription()).isEqualTo(description);
         assertThat(visitEntity.getTime()).isEqualTo(visitTime);
         assertThat(visitEntity.getDoctor().getTelephoneNumber()).isEqualTo("123-456-7890");
+    }
+
+    @Test
+    public void shouldFindPatientsByLastName() {
+
+        PatientEntity patient1 = new PatientEntity();
+        patient1.setFirstName("Anna");
+        patient1.setLastName("Nowak");
+        patient1.setTelephoneNumber("123456789");
+        patient1.setPatientNumber("PAT001");
+        patient1.setDateOfBirth(java.time.LocalDate.of(1990, 5, 15));
+        patient1.setInsured(true);
+        entityManager.persist(patient1);
+
+        PatientEntity patient2 = new PatientEntity();
+        patient2.setFirstName("Jan");
+        patient2.setLastName("Nowak");
+        patient2.setTelephoneNumber("234567890");
+        patient2.setPatientNumber("PAT002");
+        patient2.setDateOfBirth(java.time.LocalDate.of(1985, 3, 10));
+        patient2.setInsured(false);
+        entityManager.persist(patient2);
+
+        PatientEntity patient3 = new PatientEntity();
+        patient3.setFirstName("Maciej");
+        patient3.setLastName("Kowalski");
+        patient3.setTelephoneNumber("345678901");
+        patient3.setPatientNumber("PAT003");
+        patient3.setDateOfBirth(java.time.LocalDate.of(1975, 1, 5));
+        patient3.setInsured(true);
+        entityManager.persist(patient3);
+
+        entityManager.flush();
+
+        List<PatientEntity> results = patientDao.findByLastName("Nowak");
+
+        assertEquals(2, results.size());
+        assertTrue(results.stream().allMatch(patient -> patient.getLastName().equals("Nowak")));
+    }
+
+    @Test
+    public void shouldFindPatientsWithMoreThanXVisits() {
+
+        //Given
+        int minimumVisitCount = 2;
+
+        PatientEntity patientWithThreeVisits = createTestPatient();
+        entityManager.persist(patientWithThreeVisits);
+
+        DoctorEntity doctor = new DoctorEntity();
+        doctor.setFirstName("Jane");
+        doctor.setLastName("Smith");
+        doctor.setTelephoneNumber("123-456-7890");
+        doctor.setDoctorNumber("DOC001");
+        doctor.setSpecialization(Specialization.OCULIST);
+        entityManager.persist(doctor);
+
+        createAndPersistVisit(patientWithThreeVisits, doctor, "Visit 1");
+        createAndPersistVisit(patientWithThreeVisits, doctor, "Visit 2");
+        createAndPersistVisit(patientWithThreeVisits, doctor, "Visit 3");
+
+        PatientEntity patientWithOneVisit = createTestPatient();
+        patientWithOneVisit.setFirstName("SingleVisit");
+        entityManager.persist(patientWithOneVisit);
+        createAndPersistVisit(patientWithOneVisit, doctor, "Visit 1");
+
+        entityManager.flush();
+
+        //When
+        List<PatientEntity> results = patientDao.findPatientsWithMoreThanXVisits((long) minimumVisitCount);
+
+        // Then
+        assertNotNull(results, "Results list should not be null.");
+        assertEquals(1, results.size(), "Should find only one patient with more than " + minimumVisitCount + " visits.");
+        assertEquals(patientWithThreeVisits.getId(), results.get(0).getId(), "Returned patient ID does not match.");
+        assertTrue(results.get(0).getVisits().size() > minimumVisitCount, "Patient should have more visits than " + minimumVisitCount);
+    }
+
+    private void createAndPersistVisit(PatientEntity patient, DoctorEntity doctor, String description) {
+        VisitEntity visit = new VisitEntity();
+        visit.setDescription(description);
+        visit.setTime(LocalDateTime.now());
+        visit.setDoctor(doctor);
+        visit.setPatient(patient);
+        entityManager.persist(visit);
+
+        patient.getVisits().add(visit);
     }
 }

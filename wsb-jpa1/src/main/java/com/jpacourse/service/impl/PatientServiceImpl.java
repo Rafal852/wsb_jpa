@@ -4,12 +4,14 @@ import com.jpacourse.dto.PatientTO;
 import com.jpacourse.mapper.PatientMapper;
 import com.jpacourse.persistance.dao.PatientDao;
 import com.jpacourse.persistance.entity.PatientEntity;
+import com.jpacourse.persistance.entity.VisitEntity;
 import com.jpacourse.service.PatientService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -47,5 +49,16 @@ public class PatientServiceImpl implements PatientService {
         }
 
         patientDao.addVisitToPatient(patientId, doctorId, visitTime, description);
+    }
+
+    @Override
+    @Transactional
+    public List<VisitEntity> findVisitsByPatientId(Long patientId) {
+        PatientEntity patient = patientDao.findOne(patientId);
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient not found with ID: " + patientId);
+        }
+
+        return patient.getVisits();
     }
 }

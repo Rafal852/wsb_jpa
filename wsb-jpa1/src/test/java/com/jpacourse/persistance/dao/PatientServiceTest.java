@@ -79,6 +79,27 @@ class PatientServiceTest {
         assertEquals("Visit 2", result.getVisits().get(1).getDescription(), "Second visit description mismatch.");
     }
 
+    @Test
+    void testFindVisitsByPatientId_returnsValidVisitList() {
+
+        //Given
+        Long patientId = 1L;
+        PatientEntity patient = createMockPatient(patientId);
+
+        when(patientDao.findOne(patientId)).thenReturn(patient);
+
+        //When
+        List<VisitEntity> visits = patientService.findVisitsByPatientId(patientId);
+
+        //Then
+        assertNotNull(visits, "Resulting visit list should not be null.");
+        assertEquals(2, visits.size(), "Visit list size mismatch.");
+        assertEquals("Visit 1", visits.get(0).getDescription(), "First visit description mismatch.");
+        assertEquals("Visit 2", visits.get(1).getDescription(), "Second visit description mismatch.");
+
+        verify(patientDao, times(1)).findOne(patientId);
+    }
+
     private PatientEntity createMockPatient(Long patientId) {
         PatientEntity patient = new PatientEntity();
         patient.setId(patientId);
