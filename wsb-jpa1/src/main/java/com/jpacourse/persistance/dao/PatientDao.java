@@ -10,5 +10,6 @@ public interface PatientDao extends Dao<PatientEntity, Long> {
     List<PatientEntity> findPatientsWithMoreThanXVisits(Long visitCount);
     List<PatientEntity> findByInsured(boolean isInsured);
     void addCascadeVisitToPatient(Long patientId, Long doctorId, LocalDateTime visitTime, String description);
+    List<PatientEntity> findByHeightGreaterThanAndLessThan(Double minHeight, Double maxHeight);
 }
 

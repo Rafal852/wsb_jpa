@@ -13,6 +13,7 @@ public class PatientTO {
     private LocalDate dateOfBirth;
     private boolean isInsured; 
     private List<VisitTO> visits;
+    private Integer height;
 
     //gettery i settery
     public Long getId() { return id; }
@@ -33,4 +34,6 @@ public class PatientTO {
     public void setInsured(boolean insured) { isInsured = insured; }
     public List<VisitTO> getVisits() { return visits; }
     public void setVisits(List<VisitTO> visits) { this.visits = visits; }
+    public Integer getHeight() {return height;}
+    public void setHeight(Integer height) {this.height = height;}
 }

@@ -170,4 +170,58 @@ public class PatientDaoTest {
 
         patient.getVisits().add(visit);
     }
+
+    @Test
+    public void shouldFindPatientsTallerThanGivenValue() {
+        //given
+        PatientEntity shortPatient = createTestPatient();
+        shortPatient.setHeight(160);
+        entityManager.persist(shortPatient);
+
+        PatientEntity mediumPatient = createTestPatient();
+        mediumPatient.setHeight(175);
+        entityManager.persist(mediumPatient);
+
+        PatientEntity tallPatient = createTestPatient();
+        tallPatient.setHeight(190);
+        entityManager.persist(tallPatient);
+
+        entityManager.flush();
+
+        //when
+        List<PatientEntity> results = patientDao.findByHeightGreaterThanAndLessThan(170.0, null);
+
+        //then
+        assertThat(results)
+                .hasSize(2)
+                .extracting(PatientEntity::getHeight)
+                .containsExactlyInAnyOrder(175, 190);
+    }
+
+    @Test
+    public void shouldFindPatientsShorterThanGivenValue() {
+        //given
+        PatientEntity shortPatient = createTestPatient();
+        shortPatient.setHeight(160);
+        entityManager.persist(shortPatient);
+
+        PatientEntity mediumPatient = createTestPatient();
+        mediumPatient.setHeight(175);
+        entityManager.persist(mediumPatient);
+
+        PatientEntity tallPatient = createTestPatient();
+        tallPatient.setHeight(190);
+        entityManager.persist(tallPatient);
+
+        entityManager.flush();
+
+        //when
+        List<PatientEntity> results = patientDao.findByHeightGreaterThanAndLessThan(null, 180.0);
+
+        //then
+        assertThat(results)
+                .hasSize(2)
+                .extracting(PatientEntity::getHeight)
+                .containsExactlyInAnyOrder(160, 175);
+    }
 }

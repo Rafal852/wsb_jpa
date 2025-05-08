@@ -24,6 +24,7 @@ public final class PatientMapper {
         patientTO.setPatientNumber(patientEntity.getPatientNumber());
         patientTO.setDateOfBirth(patientEntity.getDateOfBirth());
         patientTO.setInsured(patientEntity.isInsured());
+        patientTO.setHeight(patientEntity.getHeight());
 
         if (patientEntity.getVisits() != null) {
             List<VisitTO> visitTOs = patientEntity.getVisits().stream()
@@ -67,6 +68,7 @@ public final class PatientMapper {
         patientEntity.setPatientNumber(patientTO.getPatientNumber());
         patientEntity.setDateOfBirth(patientTO.getDateOfBirth());
         patientEntity.setInsured(patientTO.isInsured());
+        patientEntity.setHeight(patientTO.getHeight());
 
         return patientEntity;
     }

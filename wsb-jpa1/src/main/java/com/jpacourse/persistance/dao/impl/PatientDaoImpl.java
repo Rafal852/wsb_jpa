@@ -95,6 +95,29 @@ public class PatientDaoImpl extends AbstractDao<PatientEntity, Long> implements 
         entityManager.merge(patient);
     }
 
+    @Override
+    public List<PatientEntity> findByHeightGreaterThanAndLessThan(Double minHeight, Double maxHeight) {
+        String jpql = "SELECT p FROM PatientEntity p WHERE 1=1";
+
+        if (minHeight != null) {
+            jpql += " AND p.height >= :minHeight";
+        }
+        if (maxHeight != null) {
+            jpql += " AND p.height <= :maxHeight";
+        }
+
+        var query = entityManager.createQuery(jpql, PatientEntity.class);
+
+        if (minHeight != null) {
+            query.setParameter("minHeight", minHeight);
+        }
+        if (maxHeight != null) {
+            query.setParameter("maxHeight", maxHeight);
+        }
+
+        return query.getResultList();
+    }
+
 
 
 }

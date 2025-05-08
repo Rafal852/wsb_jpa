@@ -41,6 +41,9 @@ public class PatientEntity {
 		isInsured = insured;
 	}
 
+	@Column(name = "height")
+	private Integer height;
+
 	// Relacja One-to-One z AddressEntity
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id", nullable = true) // Jednostronna relacja od strony rodzica
@@ -122,6 +125,9 @@ public class PatientEntity {
 		this.visits = visits;
 	}
 
+	public Integer getHeight() {return height;}
+
+	public void setHeight(Integer height) {this.height = height;}
 
 
 }

@@ -38,3 +38,9 @@ UPDATE Patient SET is_insured = true WHERE id = 1;
 UPDATE Patient SET is_insured = true WHERE id = 2;
 UPDATE Patient SET is_insured = false WHERE id = 3;
 UPDATE Patient SET is_insured = true WHERE id = 4;
+
+--aktualizacja istniejących pacjentów o pole: wzrost
+UPDATE Patient SET height = 163 WHERE id = 1;
+UPDATE Patient SET height = 182 WHERE id = 2;
+UPDATE Patient SET height = 177 WHERE id = 3;
+UPDATE Patient SET height = 168 WHERE id = 4;
