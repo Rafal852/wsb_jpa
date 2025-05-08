@@ -224,4 +224,41 @@ public class PatientDaoTest {
                 .extracting(PatientEntity::getHeight)
                 .containsExactlyInAnyOrder(160, 175);
     }
+
+    @Test
+    public void shouldFetchPatientWithMultipleVisitsAndLogQueries() {
+        //given
+        PatientEntity patient = createTestPatient();
+        patient.setHeight(180);
+        entityManager.persist(patient);
+
+        DoctorEntity doctor = new DoctorEntity();
+        doctor.setFirstName("Test");
+        doctor.setLastName("Doctor");
+        doctor.setDoctorNumber("DOC_TEST_" + UUID.randomUUID().toString());
+        doctor.setTelephoneNumber("123456789");
+        doctor.setSpecialization(Specialization.GP);
+        entityManager.persist(doctor);
+
+        for (int i = 1; i <= 3; i++) {
+            VisitEntity visit = new VisitEntity();
+            visit.setPatient(patient);
+            visit.setDoctor(doctor);
+            visit.setTime(LocalDateTime.now().plusDays(i));
+            visit.setDescription("Wizyta kontrolna " + i);
+            entityManager.persist(visit);
+        }
+
+        entityManager.flush();
+        entityManager.clear();
+
+        System.out.println("\nTest FetchMode.SELECT");
+
+        //when
+        PatientEntity foundPatient = patientDao.findOne(patient.getId());
+
+        //then
+        assertThat(foundPatient.getVisits()).hasSize(3);
+        assertThat(foundPatient.getHeight()).isEqualTo(180);
+    }
 }
