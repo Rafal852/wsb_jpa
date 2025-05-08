@@ -262,3 +262,9 @@ public class PatientDaoTest {
         assertThat(foundPatient.getHeight()).isEqualTo(180);
     }
 }
+
+//Wnioski z testu FetchMode.SELECT/JOIN:
+//1. FetchMode.SELECT robi osobne zapytania: jedno dla pacjenta a drugie dla wszystkich jego wizyt,
+//działa lepiej dla małej liczby wizyt.
+//2. FetchMode.JOIN robi jedno połączone zapytanie, ładuje pacjenta i wszystkie wizyty od razu,
+//działa lepiej dla większej liczby wizyt, ale może zwracać dużo danych.

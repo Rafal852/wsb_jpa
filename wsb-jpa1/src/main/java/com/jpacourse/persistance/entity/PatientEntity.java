@@ -53,7 +53,7 @@ public class PatientEntity {
 
 	// Relacja One-to-Many z VisitEntity
 	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	@Fetch(FetchMode.SELECT)
+	@Fetch(FetchMode.JOIN)
 	private List<VisitEntity> visits = new ArrayList<>(); // Dwustronna relacja
 
 	public Long getId() {
