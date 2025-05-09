@@ -4,6 +4,7 @@ import com.jpacourse.persistance.entity.DoctorEntity;
 import com.jpacourse.persistance.entity.PatientEntity;
 import com.jpacourse.persistance.entity.VisitEntity;
 import com.jpacourse.persistance.enums.Specialization;
+import jakarta.persistence.OptimisticLockException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -260,6 +262,36 @@ public class PatientDaoTest {
         //then
         assertThat(foundPatient.getVisits()).hasSize(3);
         assertThat(foundPatient.getHeight()).isEqualTo(180);
+    }
+
+    @Test
+    public void OptimisticLockGracefully() {
+
+        //given
+        PatientEntity patient = createTestPatient();
+        entityManager.persist(patient);
+        entityManager.flush();
+
+        //when
+        try {
+            PatientEntity copy1 = entityManager.find(PatientEntity.class, patient.getId());
+            PatientEntity copy2 = entityManager.find(PatientEntity.class, patient.getId());
+
+            copy1.setTelephoneNumber("111111111");
+            entityManager.flush();
+
+            copy2.setTelephoneNumber("999999999");
+            entityManager.flush();
+
+            fail("OptimisticLockException");
+        }
+        catch (OptimisticLockException ex) {
+
+            //then
+            assertThat(ex).isNotNull();
+            System.out.println("OptimisticLock ok: " + ex.getMessage());
+
+        }
     }
 }
 

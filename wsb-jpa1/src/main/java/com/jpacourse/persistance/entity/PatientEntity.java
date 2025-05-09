@@ -11,6 +11,9 @@ import org.hibernate.annotations.FetchMode;
 @Table(name = "PATIENT")
 public class PatientEntity {
 
+	@Version
+	private Long version;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -55,6 +58,8 @@ public class PatientEntity {
 	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@Fetch(FetchMode.JOIN)
 	private List<VisitEntity> visits = new ArrayList<>(); // Dwustronna relacja
+
+	public Long getVersion() {return version;}
 
 	public Long getId() {
 		return id;
